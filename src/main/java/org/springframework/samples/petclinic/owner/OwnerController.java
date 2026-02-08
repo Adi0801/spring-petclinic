@@ -19,10 +19,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.annotation.FeatureToggle;
 import org.springframework.samples.petclinic.exception.FeatureDisabledException;
 import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
@@ -48,6 +51,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Michael Isvy
  * @author Wick Dynex
  */
+@Hidden
 @Controller
 class OwnerController {
 
@@ -74,24 +78,16 @@ class OwnerController {
 							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
+
 	@GetMapping("/owners/new")
-	public String initCreationForm(HttpServletRequest request) {
-
-		String userId = request.getRemoteAddr();
-
-		if (!featureFlagService.isFeatureEnabled("OWNER_SEARCH", userId)) {
-			throw new FeatureDisabledException("Owner search feature is disabled");
-		}
+	public String initCreationForm() {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
-	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		String userId = request.getRemoteAddr();
 
-		if (!featureFlagService.isFeatureEnabled("OWNER_SEARCH", userId)) {
-			throw new FeatureDisabledException("Owner search feature is disabled");
-		}
+	@PostMapping("/owners/new")
+	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
+
 		if (result.hasErrors()) {
 			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -102,6 +98,7 @@ class OwnerController {
 		return "redirect:/owners/" + owner.getId();
 	}
 
+	@FeatureToggle("OWNER_SEARCH")
 	@GetMapping("/owners/find")
 	public String initFindForm() {
 		return "owners/findOwners";
@@ -149,10 +146,12 @@ class OwnerController {
 		return owners.findByLastNameStartingWith(lastname, pageable);
 	}
 
+
 	@GetMapping("/owners/{ownerId}/edit")
 	public String initUpdateOwnerForm() {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
+
 
 	@PostMapping("/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
@@ -179,6 +178,7 @@ class OwnerController {
 	 * @param ownerId the ID of the owner to display
 	 * @return a ModelMap with the model attributes for the view
 	 */
+
 	@GetMapping("/owners/{ownerId}")
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");

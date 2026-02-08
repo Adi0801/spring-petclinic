@@ -20,7 +20,11 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.samples.petclinic.annotation.FeatureToggle;
 import org.springframework.samples.petclinic.exception.FeatureDisabledException;
 import org.springframework.samples.petclinic.featureflag.FeatureFlag;
 import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
@@ -47,6 +51,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Arjen Poutsma
  * @author Wick Dynex
  */
+@Hidden
 @Controller
 @RequestMapping("/owners/{ownerId}")
 class PetController {
@@ -102,27 +107,18 @@ class PetController {
 		dataBinder.setValidator(new PetValidator());
 	}
 
+	@FeatureToggle("ADD_PET")
 	@GetMapping("/pets/new")
-	public String initCreationForm(Owner owner, ModelMap model, HttpServletRequest request) {
-		String userId = request.getRemoteAddr();
-
-		if (!featureFlagService.isFeatureEnabled("ADD_PET", userId)) {
-			throw new FeatureDisabledException("Add Pet feature is disabled");
-		}
+	public String initCreationForm(Owner owner, ModelMap model) {
 		Pet pet = new Pet();
 		owner.addPet(pet);
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
+	@FeatureToggle("ADD_PET")
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result,
-			RedirectAttributes redirectAttributes, HttpServletRequest request) throws Exception {
-
-		String userId = request.getRemoteAddr();
-
-		if (!featureFlagService.isFeatureEnabled("ADD_PET", userId)) {
-			throw new FeatureDisabledException("Add Pet feature is disabled");
-		}
+			RedirectAttributes redirectAttributes) throws Exception {
 
 		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null)
 			result.rejectValue("name", "duplicate", "already exists");

@@ -18,7 +18,9 @@ package org.springframework.samples.petclinic.owner;
 import java.util.Map;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.samples.petclinic.annotation.FeatureToggle;
 import org.springframework.samples.petclinic.exception.FeatureDisabledException;
 import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Dave Syer
  * @author Wick Dynex
  */
+@Hidden
 @Controller
 class VisitController {
 
@@ -86,26 +89,19 @@ class VisitController {
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
 	// called
+	@FeatureToggle("ADD_VISIT")
 	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String initNewVisitForm(HttpServletRequest request) {
-		String userId = request.getRemoteAddr();
-
-		if (!featureFlagService.isFeatureEnabled("ADD_PET", userId)) {
-			throw new FeatureDisabledException("Add Pet feature is disabled");
-		}
 		return "pets/createOrUpdateVisitForm";
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
 	// called
+	@FeatureToggle("ADD_VISIT")
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-		String userId = request.getRemoteAddr();
+			BindingResult result, RedirectAttributes redirectAttributes) {
 
-		if (!featureFlagService.isFeatureEnabled("ADD_VISIT", userId)) {
-			throw new FeatureDisabledException("Add Visit feature is disabled");
-		}
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateVisitForm";
 		}

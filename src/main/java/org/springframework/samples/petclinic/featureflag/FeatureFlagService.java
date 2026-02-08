@@ -15,24 +15,26 @@ public class FeatureFlagService {
 
 		FeatureFlag flag = repository.findByFlagKey(flagKey)
 			.orElseThrow(() ->
-				new RuntimeException("Feature flag not found: " + flagKey));
+				new IllegalStateException(
+					"Feature flag not found: " + flagKey
+				));
 
-		// 1️⃣ Global disable
+
 		if (!flag.isEnabled()) {
 			return false;
 		}
 
-		// 2️⃣ Blacklist (highest priority)
+
 		if (flag.getBlacklistUsers().contains(userId)) {
 			return false;
 		}
 
-		// 3️⃣ Whitelist
+
 		if (flag.getWhitelistUsers().contains(userId)) {
 			return true;
 		}
 
-		// 4️⃣ Percentage rollout
+
 		Integer rollout = flag.getRolloutPercentage();
 		if (rollout == null || rollout >= 100) {
 			return true;
