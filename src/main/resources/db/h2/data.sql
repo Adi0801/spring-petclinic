@@ -56,7 +56,7 @@ INSERT INTO visits VALUES (default, 7, '2013-01-04', 'spayed');
 INSERT INTO feature_flags
 (id, flag_key, enabled, rollout_percentage, description)
 VALUES
-(default, 'OWNER_SEARCH', false, 100, 'Controls owner search feature');
+(default, 'OWNER_SEARCH', true, 100, 'Controls owner search feature');
 
 INSERT INTO feature_flags
 (id, flag_key, enabled, rollout_percentage, description)

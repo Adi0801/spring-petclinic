@@ -62,12 +62,11 @@ class PetController {
 
 	private final PetTypeRepository types;
 
-	private final FeatureFlagService featureFlagService;
 
-	public PetController(OwnerRepository owners, PetTypeRepository types, FeatureFlagService featureFlagService) {
+
+	public PetController(OwnerRepository owners, PetTypeRepository types) {
 		this.owners = owners;
 		this.types = types;
-		this.featureFlagService = featureFlagService;
 	}
 
 	@ModelAttribute("types")

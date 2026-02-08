@@ -58,11 +58,10 @@ class OwnerController {
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final OwnerRepository owners;
-	private final FeatureFlagService featureFlagService;
+	
 
 	public OwnerController(OwnerRepository owners, FeatureFlagService featureFlagService) {
 		this.owners = owners;
-		this.featureFlagService = featureFlagService;
 	}
 
 	@InitBinder

@@ -21,8 +21,6 @@ import java.util.Optional;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.samples.petclinic.annotation.FeatureToggle;
-import org.springframework.samples.petclinic.exception.FeatureDisabledException;
-import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -48,11 +46,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 class VisitController {
 
 	private final OwnerRepository owners;
-	private final FeatureFlagService featureFlagService;
 
-	public VisitController(OwnerRepository owners, FeatureFlagService featureFlagService) {
+
+	public VisitController(OwnerRepository owners) {
 		this.owners = owners;
-		this.featureFlagService = featureFlagService;
+
 	}
 
 	@InitBinder
