@@ -19,9 +19,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.exception.FeatureDisabledException;
+import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,9 +54,11 @@ class OwnerController {
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
 	private final OwnerRepository owners;
+	private final FeatureFlagService featureFlagService;
 
-	public OwnerController(OwnerRepository owners) {
+	public OwnerController(OwnerRepository owners, FeatureFlagService featureFlagService) {
 		this.owners = owners;
+		this.featureFlagService = featureFlagService;
 	}
 
 	@InitBinder
@@ -70,12 +75,23 @@ class OwnerController {
 	}
 
 	@GetMapping("/owners/new")
-	public String initCreationForm() {
+	public String initCreationForm(HttpServletRequest request) {
+
+		String userId = request.getRemoteAddr();
+
+		if (!featureFlagService.isFeatureEnabled("OWNER_SEARCH", userId)) {
+			throw new FeatureDisabledException("Owner search feature is disabled");
+		}
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
 	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
+	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		String userId = request.getRemoteAddr();
+
+		if (!featureFlagService.isFeatureEnabled("OWNER_SEARCH", userId)) {
+			throw new FeatureDisabledException("Owner search feature is disabled");
+		}
 		if (result.hasErrors()) {
 			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;

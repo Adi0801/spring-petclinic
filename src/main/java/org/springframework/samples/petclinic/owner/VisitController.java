@@ -18,6 +18,9 @@ package org.springframework.samples.petclinic.owner;
 import java.util.Map;
 import java.util.Optional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.samples.petclinic.exception.FeatureDisabledException;
+import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -42,9 +45,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 class VisitController {
 
 	private final OwnerRepository owners;
+	private final FeatureFlagService featureFlagService;
 
-	public VisitController(OwnerRepository owners) {
+	public VisitController(OwnerRepository owners, FeatureFlagService featureFlagService) {
 		this.owners = owners;
+		this.featureFlagService = featureFlagService;
 	}
 
 	@InitBinder
@@ -82,7 +87,12 @@ class VisitController {
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
 	// called
 	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm() {
+	public String initNewVisitForm(HttpServletRequest request) {
+		String userId = request.getRemoteAddr();
+
+		if (!featureFlagService.isFeatureEnabled("ADD_PET", userId)) {
+			throw new FeatureDisabledException("Add Pet feature is disabled");
+		}
 		return "pets/createOrUpdateVisitForm";
 	}
 
@@ -90,7 +100,12 @@ class VisitController {
 	// called
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes) {
+			BindingResult result, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		String userId = request.getRemoteAddr();
+
+		if (!featureFlagService.isFeatureEnabled("ADD_VISIT", userId)) {
+			throw new FeatureDisabledException("Add Visit feature is disabled");
+		}
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateVisitForm";
 		}
