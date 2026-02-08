@@ -145,7 +145,9 @@ Feature state changes take effect immediately without restarting the application
 🎥 Loom Walkthrough
 
 Loom Video Link:
-https://loom.com/share/<your-video-id>
+https://www.loom.com/share/1249098ae10a44d58dcdfc1881b0cd35
+https://www.loom.com/share/4819abf56cb44c53a8f20517cd38672c
+
 
 (Replace with your Loom walkthrough link)
 
