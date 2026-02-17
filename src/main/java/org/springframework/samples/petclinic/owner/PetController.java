@@ -62,8 +62,6 @@ class PetController {
 
 	private final PetTypeRepository types;
 
-
-
 	public PetController(OwnerRepository owners, PetTypeRepository types) {
 		this.owners = owners;
 		this.types = types;

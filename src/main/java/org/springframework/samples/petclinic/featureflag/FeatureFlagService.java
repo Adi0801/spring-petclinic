@@ -5,6 +5,7 @@ import java.util.List;
 
 @Service
 public class FeatureFlagService {
+
 	private final FeatureFlagRepository repository;
 
 	public FeatureFlagService(FeatureFlagRepository repository) {
@@ -14,26 +15,19 @@ public class FeatureFlagService {
 	public boolean isFeatureEnabled(String flagKey, String userId) {
 
 		FeatureFlag flag = repository.findByFlagKey(flagKey)
-			.orElseThrow(() ->
-				new IllegalStateException(
-					"Feature flag not found: " + flagKey
-				));
-
+			.orElseThrow(() -> new IllegalStateException("Feature flag not found: " + flagKey));
 
 		if (!flag.isEnabled()) {
 			return false;
 		}
 
-
 		if (flag.getBlacklistUsers().contains(userId)) {
 			return false;
 		}
 
-
 		if (flag.getWhitelistUsers().contains(userId)) {
 			return true;
 		}
-
 
 		Integer rollout = flag.getRolloutPercentage();
 		if (rollout == null || rollout >= 100) {
@@ -58,11 +52,11 @@ public class FeatureFlagService {
 	}
 
 	public FeatureFlag findByKey(String key) {
-		return repository.findByFlagKey(key)
-			.orElseThrow(() -> new RuntimeException("Flag not found"));
+		return repository.findByFlagKey(key).orElseThrow(() -> new RuntimeException("Flag not found"));
 	}
 
 	public void delete(String key) {
 		repository.delete(findByKey(key));
 	}
+
 }

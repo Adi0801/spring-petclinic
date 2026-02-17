@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
 	@ExceptionHandler(FeatureDisabledException.class)
 	public ResponseEntity<String> handleFeatureDisabled(FeatureDisabledException ex) {
-		return ResponseEntity
-			.status(HttpStatus.FORBIDDEN)
-			.body(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
 	}
+
 }

@@ -47,7 +47,6 @@ class VisitController {
 
 	private final OwnerRepository owners;
 
-
 	public VisitController(OwnerRepository owners) {
 		this.owners = owners;
 

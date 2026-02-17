@@ -61,14 +61,15 @@ VALUES
 INSERT INTO feature_flags
 (id, flag_key, enabled, rollout_percentage, description)
 VALUES
-(default, 'ADD_PET', false, 50, 'Controls add pet feature');
+(default, 'ADD_PET', true, 50, 'Controls add pet feature');
 
 INSERT INTO feature_flags
 (id, flag_key, enabled, rollout_percentage, description)
 VALUES
-(default, 'ADD_VISIT', false, 0, 'Controls add visit feature');
+(default, 'ADD_VISIT', true, 0, 'Controls add visit feature');
 
 -- Allow ADD_PET always for localhost
 INSERT INTO feature_flag_whitelist VALUES (2, '127.0.0.1');
 -- Block owner search for this user
-INSERT INTO feature_flag_blacklist VALUES (1, '192.168.1.10');
+-- for testing 0:0:0:0:0:0:0:1
+INSERT INTO feature_flag_blacklist VALUES (1, '0:0:0:0:0:0:0:1');
