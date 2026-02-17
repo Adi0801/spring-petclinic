@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.samples.petclinic.annotation.FeatureToggle;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -88,7 +87,7 @@ class VisitController {
 	// called
 	@FeatureToggle("ADD_VISIT")
 	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm(HttpServletRequest request) {
+	public String initNewVisitForm() {
 		return "pets/createOrUpdateVisitForm";
 	}
 

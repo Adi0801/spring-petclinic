@@ -20,13 +20,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.annotation.FeatureToggle;
-import org.springframework.samples.petclinic.exception.FeatureDisabledException;
-import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,7 +55,7 @@ class OwnerController {
 
 	private final OwnerRepository owners;
 
-	public OwnerController(OwnerRepository owners, FeatureFlagService featureFlagService) {
+	public OwnerController(OwnerRepository owners) {
 		this.owners = owners;
 	}
 
