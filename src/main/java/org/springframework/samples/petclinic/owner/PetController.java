@@ -21,13 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.samples.petclinic.annotation.FeatureToggle;
-import org.springframework.samples.petclinic.exception.FeatureDisabledException;
-import org.springframework.samples.petclinic.featureflag.FeatureFlag;
-import org.springframework.samples.petclinic.featureflag.FeatureFlagService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
